@@ -1,0 +1,661 @@
+
+<!doctype html>
+<html lang="fr" data-ui="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Focus Sessions — travailler seul, mais pas tout seul</title>
+  <meta name="description" content="Sessions de body doubling en visio, gratuites. 5 min d'objectif, 50 min de focus, 5 min de check-out.">
+  <meta property="og:title" content="Focus Sessions — travailler seul, mais pas tout seul">
+  <meta property="og:description" content="Sessions de body doubling en visio, gratuites. 5 min d'objectif, 50 min de focus, 5 min de check-out.">
+  <link rel="preconnect" href="https://fonts.bunny.net">
+  <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700,800|space-mono:400,700&display=swap" rel="stylesheet">
+  <style>
+    /* ---------- thibaultmilan.com tokens ---------- */
+    :root {
+      --concrete: #F4F1F1;
+      --cerulean: #00B3E3;
+      --lochmara: #007CCE;
+      --crimson: #DF144C;
+      --monza: #C60113;
+      --deep-cove: #000E44;
+      --jaguar: #000112;
+      --jaguar-2: #000010;
+
+      --bg: var(--concrete);
+      --surface: #FFFFFF;
+      --surface-2: #E6E1E1;
+      --text: var(--jaguar);
+      --muted: #4b4f5c;
+      --accent: var(--lochmara);
+      --accent-ink: #FFFFFF;
+      --hot: var(--crimson);
+      --edge: var(--deep-cove);
+      --edge-ink: var(--concrete);
+      --line: rgba(0, 1, 18, .12);
+
+      --radius: 14px;
+      --wrap: 1040px;
+      --mono: "Space Mono", ui-monospace, monospace;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: var(--jaguar-2);
+        --surface: #00093a;
+        --surface-2: var(--deep-cove);
+        --text: var(--concrete);
+        --muted: #b4b8c8;
+        --accent: var(--cerulean);
+        --accent-ink: var(--jaguar);
+        --hot: #ff4d7a;
+        --edge: var(--crimson);
+        --edge-ink: #FFFFFF;
+        --line: rgba(244, 241, 241, .14);
+      }
+    }
+
+    /* ---------- Language switching ---------- */
+    /* Each .i18n block carries a lang attribute; only the active one shows. */
+    html[data-ui="fr"] .i18n:not([lang="fr"]),
+    html[data-ui="en"] .i18n:not([lang="en"]) { display: none; }
+
+    .lang-switch {
+      position: fixed; top: 16px; right: 16px; z-index: 10;
+      display: flex; padding: 4px; gap: 2px;
+      background: var(--surface); border: 1px solid var(--line); border-radius: 999px;
+      box-shadow: 0 4px 16px rgba(0, 1, 18, .08);
+    }
+    .lang-switch button {
+      font: 700 .75rem/1 var(--mono); letter-spacing: .06em;
+      border: 0; background: transparent; color: var(--muted);
+      padding: 8px 12px; border-radius: 999px; cursor: pointer;
+    }
+    .lang-switch button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); }
+
+    /* ---------- Base ---------- */
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font: 400 15.5px/1.7 var(--mono);
+      -webkit-font-smoothing: antialiased;
+    }
+    .wrap { max-width: var(--wrap); margin: 0 auto; padding: 0 16px; }
+    a { color: var(--accent); }
+    h1, h2, h3 { font-family: Inter, system-ui, sans-serif; line-height: 1.12; margin: 0 0 .5em; letter-spacing: -.028em; }
+    h2 { font-size: clamp(1.6rem, 3.5vw, 2.2rem); font-weight: 800; }
+    .kicker {
+      font-family: var(--mono); font-weight: 700;
+      text-transform: uppercase; letter-spacing: .08em; font-size: .78rem;
+      color: var(--hot);
+    }
+    section { padding: 72px 0; border-top: 1px solid var(--line); }
+    .muted { color: var(--muted); }
+
+    .btn {
+      display: inline-flex; align-items: center; gap: .5em;
+      background: var(--accent); color: var(--accent-ink);
+      font: 600 1rem/1 Inter, system-ui, sans-serif; text-decoration: none;
+      padding: 14px 22px; border-radius: 999px;
+      transition: transform .15s ease, box-shadow .15s ease;
+    }
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0, 124, 206, .28); }
+    .btn.ghost { background: transparent; color: var(--text); border: 1.5px solid var(--line); }
+
+    /* ---------- Hero ---------- */
+    .hero { padding: 96px 0 72px; }
+    .hero h1 { font-size: clamp(2.4rem, 7vw, 4.6rem); font-weight: 800; max-width: 14ch; }
+    .hero h1 em { font-style: normal; color: var(--accent); }
+    .hero p.lead { font-size: clamp(1.05rem, 2.2vw, 1.3rem); color: var(--muted); max-width: 46ch; }
+    .hero .ctas { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+    .pills { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 28px; padding: 0; list-style: none; }
+    .pills li {
+      font-family: var(--mono); font-weight: 400; font-size: .85rem;
+      background: var(--surface-2); padding: 6px 14px; border-radius: 999px;
+    }
+
+    /* ---------- Cards ---------- */
+    .grid { display: grid; gap: 16px; margin-top: 24px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+    .card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 24px; }
+    .card h3 { font-size: 1.15rem; }
+    .card p { margin: 0; color: var(--muted); }
+    .card .icon { font-size: 1.6rem; display: block; margin-bottom: 10px; }
+
+    /* ---------- Ritual timeline ---------- */
+    .ritual { display: grid; grid-template-columns: 1fr 10fr 1fr; gap: 6px; margin: 32px 0 24px; }
+    .ritual div {
+      border-radius: 12px; padding: 14px 12px; min-height: 64px;
+      font-family: var(--mono); font-weight: 700; font-size: .9rem;
+      display: flex; align-items: center; justify-content: center; text-align: center;
+    }
+    .ritual .edge { background: var(--edge); color: var(--edge-ink); }
+    .ritual .core { background: var(--accent); color: var(--accent-ink); font-size: 1.1rem; }
+    .ritual-legend strong { display: block; font: 800 1.6rem/1.2 Inter, system-ui, sans-serif; letter-spacing: -.02em; color: var(--accent); }
+
+    /* ---------- Slots ---------- */
+    .slot .day { font-family: var(--mono); font-weight: 700; text-transform: uppercase; letter-spacing: .08em; font-size: .8rem; color: var(--hot); }
+    .slot .hours { font: 800 2rem/1.15 Inter, system-ui, sans-serif; letter-spacing: -.03em; margin: 4px 0 6px; }
+
+    /* ---------- Booking ---------- */
+    .booking-box {
+      background: var(--surface); border: 1px solid var(--line);
+      border-radius: var(--radius); padding: 8px; margin-top: 24px;
+      min-height: 560px; overflow: hidden;
+    }
+    .cal-inline { width: 100%; min-height: 540px; }
+    .fallback { text-align: center; padding: 48px 16px; }
+    .fallback-note { text-align: center; margin-top: 16px; font-size: .9rem; color: var(--muted); }
+
+    /* ---------- FAQ ---------- */
+    details { border-bottom: 1px solid var(--line); padding: 18px 0; }
+    summary { cursor: pointer; font-weight: 700; list-style: none; display: flex; justify-content: space-between; gap: 16px; }
+    summary::-webkit-details-marker { display: none; }
+    summary::after { content: "+"; color: var(--accent); font-weight: 800; transition: transform .2s; }
+    details[open] summary::after { transform: rotate(45deg); }
+    details p { margin: 10px 0 0; color: var(--muted); max-width: 65ch; }
+
+    footer { padding: 40px 0 56px; color: var(--muted); font-size: .9rem; border-top: 1px solid var(--line); }
+
+    @media (max-width: 560px) {
+      section { padding: 56px 0; }
+      .hero { padding: 72px 0 48px; }
+      .ritual { grid-template-columns: 1fr 6fr 1fr; }
+      .ritual div { font-size: .8rem; padding: 10px 6px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .btn { transition: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Language toggle (hidden until JS runs, so no-JS visitors just get FR) -->
+  <div class="lang-switch" role="group" aria-label="Langue / Language" hidden>
+    <button type="button" data-set-lang="fr" aria-pressed="true">FR</button>
+    <button type="button" data-set-lang="en" aria-pressed="false">EN</button>
+  </div>
+
+  
+  
+  
+  <div class="i18n" lang="fr">
+
+    <header class="hero">
+      <div class="wrap">
+        <p class="kicker">Focus Sessions · body doubling</p>
+        <h1>Travailler seul, <em>mais pas tout seul.</em></h1>
+        <p class="lead">Une heure en visio avec une poignée de personnes qui, comme toi, ont un truc à abattre. On annonce son objectif, on coupe le micro, et la présence des autres fait le reste.</p>
+        <div class="ctas">
+          <a class="btn" href="#reserver">Réserver une place →</a>
+          <a class="btn ghost" href="#rituel-fr">Comment ça marche</a>
+        </div>
+        <ul class="pills">
+          <li>Gratuit</li><li>4 places max</li><li>60 min</li><li>En visio</li>
+        </ul>
+      </div>
+    </header>
+
+    <section>
+      <div class="wrap">
+        <p class="kicker">Pourquoi ça marche</p>
+        <h2>Le collègue silencieux qui te manquait.</h2>
+        <div class="grid">
+          
+          <div class="card">
+            <span class="icon">🪑</span>
+            <h3>Un rendez-vous, pas une intention</h3>
+            <p>« Je m'y mets demain matin » devient « j'ai une session à 8 h ». Le créneau fait le travail de volonté à ta place.</p>
+          </div>
+          
+          <div class="card">
+            <span class="icon">👀</span>
+            <h3>La présence, pas la surveillance</h3>
+            <p>Personne ne regarde ton écran. Savoir que d'autres bossent en même temps suffit à rendre le scroll moins tentant.</p>
+          </div>
+          
+          <div class="card">
+            <span class="icon">🎯</span>
+            <h3>Un objectif dit à voix haute</h3>
+            <p>L'annoncer en début de session, puis dire si c'est fait à la fin : la plus légère des responsabilités, et la plus efficace.</p>
+          </div>
+          
+        </div>
+      </div>
+    </section>
+
+    <section id="rituel-fr">
+      <div class="wrap">
+        <p class="kicker">Le rituel</p>
+        <h2>5 · 50 · 5. Toujours pareil.</h2>
+        <div class="ritual" aria-hidden="true">
+          <div class="edge">5</div>
+          <div class="core">50 min de focus</div>
+          <div class="edge">5</div>
+        </div>
+        <div class="grid ritual-legend">
+          
+          <div class="card">
+            <strong>5 min</strong>
+            <p>Bonjour, et chacun annonce son objectif en une phrase.</p>
+          </div>
+          
+          <div class="card">
+            <strong>50 min</strong>
+            <p>Caméra allumée, micro coupé. On bosse. C'est tout.</p>
+          </div>
+          
+          <div class="card">
+            <strong>5 min</strong>
+            <p>Check-out : fait, pas fait, à moitié ? Sans jugement.</p>
+          </div>
+          
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="wrap">
+        <p class="kicker">Quand</p>
+        <h2>Les créneaux</h2>
+        <div class="grid">
+          
+          <div class="card slot">
+            <div class="day">Lundi</div>
+            <div class="hours">8 h – 17 h</div>
+            <p>Toute la journée : une session par heure.</p>
+          </div>
+          
+          <div class="card slot">
+            <div class="day">Mardi → vendredi</div>
+            <div class="hours">8 h – 10 h</div>
+            <p>Deux sessions pour bien lancer la journée.</p>
+          </div>
+          
+        </div>
+
+        <h2 style="margin-top:56px">Trois règles, pas une de plus</h2>
+        <div class="grid">
+          
+          <div class="card">
+            <span class="icon">🕑</span>
+            <h3>Inscription jusqu'à 30 min avant</h3>
+            <p>Passé ce délai, la liste est figée. Pas d'inscrit, pas de session.</p>
+          </div>
+          
+          <div class="card">
+            <span class="icon">🚪</span>
+            <h3>La porte ferme à +5 min</h3>
+            <p>Passé ce délai, on n'ouvre plus : le flow des autres passe avant. Rendez-vous à la suivante.</p>
+          </div>
+          
+          <div class="card">
+            <span class="icon">🔁</span>
+            <h3>Empêché·e ? Libère ta place</h3>
+            <p>Un clic sur « Annuler » dans l'e-mail de confirmation. C'est la seule contrepartie demandée.</p>
+          </div>
+          
+        </div>
+      </div>
+    </section>
+
+  </div>
+  
+  
+  <div class="i18n" lang="en">
+
+    <header class="hero">
+      <div class="wrap">
+        <p class="kicker">Focus Sessions · body doubling</p>
+        <h1>Work alone, <em>but not on your own.</em></h1>
+        <p class="lead">One hour on video with a handful of people who, like you, have something to get done. Share your goal, mute your mic, and let everyone else's presence do the rest.</p>
+        <div class="ctas">
+          <a class="btn" href="#reserver">Book a seat →</a>
+          <a class="btn ghost" href="#rituel-en">How it works</a>
+        </div>
+        <ul class="pills">
+          <li>Free</li><li>4 seats max</li><li>60 min</li><li>Online</li>
+        </ul>
+      </div>
+    </header>
+
+    <section>
+      <div class="wrap">
+        <p class="kicker">Why it works</p>
+        <h2>The quiet coworker you were missing.</h2>
+        <div class="grid">
+          
+          <div class="card">
+            <span class="icon">🪑</span>
+            <h3>An appointment, not an intention</h3>
+            <p>“I'll get to it tomorrow morning” becomes “I've got a session at 8.” The time slot does the willpower work for you.</p>
+          </div>
+          
+          <div class="card">
+            <span class="icon">👀</span>
+            <h3>Presence, not surveillance</h3>
+            <p>Nobody looks at your screen. Knowing others are working at the same time makes scrolling a lot less tempting.</p>
+          </div>
+          
+          <div class="card">
+            <span class="icon">🎯</span>
+            <h3>A goal said out loud</h3>
+            <p>Share it at the start, say whether it's done at the end: the lightest form of accountability, and the most effective.</p>
+          </div>
+          
+        </div>
+      </div>
+    </section>
+
+    <section id="rituel-en">
+      <div class="wrap">
+        <p class="kicker">The ritual</p>
+        <h2>5 · 50 · 5. Every time.</h2>
+        <div class="ritual" aria-hidden="true">
+          <div class="edge">5</div>
+          <div class="core">50 min of focus</div>
+          <div class="edge">5</div>
+        </div>
+        <div class="grid ritual-legend">
+          
+          <div class="card">
+            <strong>5 min</strong>
+            <p>Hi, and everyone shares their goal in one sentence.</p>
+          </div>
+          
+          <div class="card">
+            <strong>50 min</strong>
+            <p>Camera on, mic off. We work. That's it.</p>
+          </div>
+          
+          <div class="card">
+            <strong>5 min</strong>
+            <p>Check-out: done, not done, halfway? No judgment.</p>
+          </div>
+          
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="wrap">
+        <p class="kicker">When</p>
+        <h2>Time slots</h2>
+        <div class="grid">
+          
+          <div class="card slot">
+            <div class="day">Monday</div>
+            <div class="hours">8 am – 5 pm</div>
+            <p>All day: one session every hour.</p>
+          </div>
+          
+          <div class="card slot">
+            <div class="day">Tuesday → Friday</div>
+            <div class="hours">8 am – 10 am</div>
+            <p>Two sessions to kick off the day.</p>
+          </div>
+          
+        </div>
+
+        <h2 style="margin-top:56px">Three rules, no more</h2>
+        <div class="grid">
+          
+          <div class="card">
+            <span class="icon">🕑</span>
+            <h3>Book up to 30 min before</h3>
+            <p>After that, the list is locked. No sign-ups, no session.</p>
+          </div>
+          
+          <div class="card">
+            <span class="icon">🚪</span>
+            <h3>The door closes at +5 min</h3>
+            <p>After that, nobody else gets in: everyone else's flow comes first. See you at the next one.</p>
+          </div>
+          
+          <div class="card">
+            <span class="icon">🔁</span>
+            <h3>Can't make it? Free up your seat</h3>
+            <p>One click on “Cancel” in your confirmation email. That's the only thing asked in return.</p>
+          </div>
+          
+        </div>
+      </div>
+    </section>
+
+  </div>
+  
+
+  
+  <section id="reserver">
+    <div class="wrap">
+      
+      
+      <div class="i18n" lang="fr">
+        <p class="kicker">Réserver</p>
+        <h2>Choisis ton créneau.</h2>
+        <p class="muted" style="max-width:56ch">Tu reçois une invitation avec le lien de la visio et un rappel avant la session.</p>
+      </div>
+      
+      
+      <div class="i18n" lang="en">
+        <p class="kicker">Book</p>
+        <h2>Pick your slot.</h2>
+        <p class="muted" style="max-width:56ch">You'll get an invite with the video link and a reminder before the session.</p>
+      </div>
+      
+
+      <div class="booking-box">
+        <div id="cal-focus" class="cal-inline">
+          <noscript><p class="fallback"><a class="btn" href="https://cal.com/thibault-milan-amu8et/focus">Cal.com →</a></p></noscript>
+        </div>
+      </div>
+
+      
+      <p class="fallback-note i18n" lang="fr">
+        Le calendrier ne s'affiche pas ?
+        <a href="https://cal.com/thibault-milan-amu8et/focus">Ouvre-le directement sur Cal.com</a>.
+      </p>
+      
+      <p class="fallback-note i18n" lang="en">
+        Calendar not showing?
+        <a href="https://cal.com/thibault-milan-amu8et/focus">Open it directly on Cal.com</a>.
+      </p>
+      
+    </div>
+  </section>
+
+  
+  
+  
+  <div class="i18n" lang="fr">
+    <section>
+      <div class="wrap">
+        <p class="kicker">FAQ</p>
+        <h2>Les questions qu'on se pose avant la première fois</h2>
+        <div style="margin-top:16px">
+          
+          <details>
+            <summary>C'est quoi, le body doubling ?</summary>
+            <p>Travailler en présence de quelqu'un d'autre. Personne ne te surveille, personne ne te juge : la simple présence des autres suffit à rendre le démarrage plus facile et la distraction moins tentante.</p>
+          </details>
+          
+          <details>
+            <summary>Je dois parler ?</summary>
+            <p>Juste au début (ton objectif, en une phrase, dans le chat ou à voix haute) et à la fin. Pendant les 50 minutes, micro coupé.</p>
+          </details>
+          
+          <details>
+            <summary>La caméra est obligatoire ?</summary>
+            <p>Fortement conseillée : c'est elle qui crée l'effet « on est ensemble ». Personne ne regarde ton écran, juste ta présence.</p>
+          </details>
+          
+          <details>
+            <summary>Je peux bosser sur quoi ?</summary>
+            <p>Tout ce qui demande de la concentration : un mémoire, des mails en retard, du code, ta compta, un tri de photos. Pas de jugement sur l'objectif.</p>
+          </details>
+          
+          <details>
+            <summary>Et si je suis en retard ?</summary>
+            <p>La porte ferme 5 minutes après le début, pour ne pas casser le flow des autres. Inscris-toi à la session suivante, elle n'est jamais loin.</p>
+          </details>
+          
+          <details>
+            <summary>Quelles infos sont collectées, et qu'est-ce que tu en fais ?</summary>
+            <p>Pour réserver, Cal.com te demande ton nom et ton e-mail. Ils servent uniquement à t'envoyer l'invitation, le lien de la visio et le rappel. Je n'en fais rien d'autre : pas de newsletter, pas de revente, pas de partage, et les autres participants ne voient pas ton adresse. Les sessions ne sont pas enregistrées. Tu veux que tes données soient supprimées ? Un message suffit.</p>
+          </details>
+          
+          <details>
+            <summary>Combien ça coûte ?</summary>
+            <p>Rien, pour l'instant. Si tu ne peux plus venir, annule simplement ta place pour la libérer : c'est la seule « monnaie » demandée.</p>
+          </details>
+          
+        </div>
+      </div>
+    </section>
+    <footer>
+      <div class="wrap">
+        Animé par Thibault Milan · body doubling, en version maison et gratuite. · <a href="https://thibaultmilan.com">thibaultmilan.com</a>
+      </div>
+    </footer>
+  </div>
+  
+  
+  <div class="i18n" lang="en">
+    <section>
+      <div class="wrap">
+        <p class="kicker">FAQ</p>
+        <h2>Questions people ask before their first session</h2>
+        <div style="margin-top:16px">
+          
+          <details>
+            <summary>What is body doubling?</summary>
+            <p>Working in the presence of someone else. Nobody's watching you, nobody's judging: simply having others around makes getting started easier and distractions less tempting.</p>
+          </details>
+          
+          <details>
+            <summary>Do I have to talk?</summary>
+            <p>Only at the start (your goal, in one sentence, in the chat or out loud) and at the end. During the 50 minutes, mic off.</p>
+          </details>
+          
+          <details>
+            <summary>Is the camera mandatory?</summary>
+            <p>Strongly recommended: it's what creates the “we're in this together” feeling. Nobody looks at your screen, just your presence.</p>
+          </details>
+          
+          <details>
+            <summary>What can I work on?</summary>
+            <p>Anything that needs focus: a thesis, overdue emails, code, your accounting, sorting photos. No judgment on the goal.</p>
+          </details>
+          
+          <details>
+            <summary>What if I'm late?</summary>
+            <p>The door closes 5 minutes after the start, so we don't break everyone else's flow. Book the next session, there's always one coming up.</p>
+          </details>
+          
+          <details>
+            <summary>What data is collected, and what do you do with it?</summary>
+            <p>To book, Cal.com asks for your name and email. They're used only to send you the invite, the video link and the reminder. I don't do anything else with them: no newsletter, no reselling, no sharing, and other attendees can't see your address. Sessions aren't recorded. Want your data deleted? Just send me a message.</p>
+          </details>
+          
+          <details>
+            <summary>How much does it cost?</summary>
+            <p>Nothing, for now. If you can't make it anymore, just cancel to free up your seat: that's the only “currency” asked.</p>
+          </details>
+          
+        </div>
+      </div>
+    </section>
+    <footer>
+      <div class="wrap">
+        Hosted by Thibault Milan · body doubling, homemade and free. · <a href="https://thibaultmilan.com">thibaultmilan.com</a>
+      </div>
+    </footer>
+  </div>
+  
+
+  <!-- Language logic: ?lang= param > saved choice > browser language > FR -->
+  <script>
+    (function () {
+      var META = {
+        fr: { title: "Focus Sessions — travailler seul, mais pas tout seul", desc: "Sessions de body doubling en visio, gratuites. 5 min d'objectif, 50 min de focus, 5 min de check-out." },
+        en: { title: "Focus Sessions — work alone, but not on your own", desc: "Free online body doubling sessions. 5 min to set your goal, 50 min of focus, 5 min check-out." }
+      };
+      var root = document.documentElement;
+      var switcher = document.querySelector(".lang-switch");
+
+      function store(key, val) {
+        try { if (val === undefined) return localStorage.getItem(key); localStorage.setItem(key, val); }
+        catch (e) { return null; }
+      }
+
+      function apply(lang) {
+        if (!META[lang]) lang = "fr";
+        root.setAttribute("data-ui", lang);
+        root.setAttribute("lang", lang);
+        document.title = META[lang].title;
+        var d = document.querySelector('meta[name="description"]');
+        if (d) d.setAttribute("content", META[lang].desc);
+        switcher.querySelectorAll("button").forEach(function (b) {
+          b.setAttribute("aria-pressed", String(b.dataset.setLang === lang));
+        });
+      }
+
+      var fromUrl = new URLSearchParams(location.search).get("lang");
+      var saved = store("focus-lang");
+      var browser = (navigator.language || "fr").toLowerCase().startsWith("fr") ? "fr" : "en";
+      apply(fromUrl || saved || browser);
+
+      switcher.hidden = false;
+      switcher.addEventListener("click", function (e) {
+        var lang = e.target.dataset && e.target.dataset.setLang;
+        if (!lang) return;
+        apply(lang);
+        store("focus-lang", lang);
+      });
+    })();
+  </script>
+
+  <!-- Cal.com inline embed (official loader) -->
+  <script>
+    (function (C, A, L) {
+      let p = function (a, ar) { a.q.push(ar); };
+      let d = C.document;
+      C.Cal = C.Cal || function () {
+        let cal = C.Cal; let ar = arguments;
+        if (!cal.loaded) {
+          cal.ns = {}; cal.q = cal.q || [];
+          d.head.appendChild(d.createElement("script")).src = A;
+          cal.loaded = true;
+        }
+        if (ar[0] === L) {
+          const api = function () { p(api, arguments); };
+          const namespace = ar[1];
+          api.q = api.q || [];
+          if (typeof namespace === "string") {
+            cal.ns[namespace] = cal.ns[namespace] || api;
+            p(cal.ns[namespace], ar);
+            p(cal, ["initNamespace", namespace]);
+          } else p(cal, ar);
+          return;
+        }
+        p(cal, ar);
+      };
+    })(window, "https://app.cal.com/embed/embed.js", "init");
+
+    /** Mount one inline Cal.com calendar in its own namespace. */
+    function mountCal(ns, selector, link) {
+      Cal("init", ns, { origin: "https://cal.com" });
+      Cal.ns[ns]("inline", { elementOrSelector: selector, calLink: link, config: { layout: "month_view" } });
+      Cal.ns[ns]("ui", {
+        styles: { branding: { brandColor: "#007CCE" } },
+        hideEventTypeDetails: true,
+        layout: "month_view"
+      });
+    }
+
+    mountCal("focus", "#cal-focus", "thibault-milan-amu8et/focus");
+  </script>
+</body>
+</html>
