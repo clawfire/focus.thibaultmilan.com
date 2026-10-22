@@ -648,10 +648,42 @@
     function mountCal(ns, selector, link) {
       Cal("init", ns, { origin: "https://cal.com" });
       Cal.ns[ns]("inline", { elementOrSelector: selector, calLink: link, config: { layout: "month_view" } });
+      // Calendar colours aligned on the thibaultmilan.com palette (light + dark)
       Cal.ns[ns]("ui", {
-        styles: { branding: { brandColor: "#007CCE" } },
         hideEventTypeDetails: true,
-        layout: "month_view"
+        layout: "month_view",
+        cssVarsPerTheme: {
+          light: {
+            "cal-brand": "#007CCE",           // Lochmara
+            "cal-brand-text": "#FFFFFF",
+            "cal-bg": "#FFFFFF",
+            "cal-bg-muted": "#F4F1F1",        // Concrete
+            "cal-bg-subtle": "#F4F1F1",
+            "cal-bg-emphasis": "#E6E1E1",
+            "cal-text": "#000112",            // Jaguar
+            "cal-text-emphasis": "#000112",
+            "cal-text-subtle": "#4b4f5c",
+            "cal-text-muted": "#4b4f5c",
+            "cal-border": "rgba(0, 1, 18, .12)",
+            "cal-border-subtle": "rgba(0, 1, 18, .08)",
+            "cal-border-booker": "rgba(0, 1, 18, .12)"
+          },
+          dark: {
+            "cal-brand": "#00B3E3",           // Cerulean
+            "cal-brand-text": "#000112",
+            "cal-bg": "#00093a",              // page surface
+            "cal-bg-muted": "#000E44",        // Deep Cove
+            "cal-bg-subtle": "#000E44",
+            "cal-bg-emphasis": "#0a1a5c",
+            "cal-text": "#F4F1F1",            // Concrete
+            "cal-text-emphasis": "#F4F1F1",
+            "cal-text-subtle": "#b4b8c8",
+            "cal-text-muted": "#b4b8c8",
+            "cal-border": "rgba(244, 241, 241, .14)",
+            "cal-border-subtle": "rgba(244, 241, 241, .08)",
+            "cal-border-booker": "rgba(244, 241, 241, .14)"
+          }
+        }
       });
     }
 
